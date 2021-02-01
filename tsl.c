@@ -1,3 +1,10 @@
+/* tsl.c relatively minimal TSL umd protocol receiver
+ * (C) Andreas Lang 2020
+ *
+ * This file is subject to the MIT license (see included LICENSE file)
+ *
+**/
+
 #include <inttypes.h>
 
 enum parserState
@@ -26,6 +33,12 @@ void tsl_setCallback(void(*cb_ptr)(uint8_t, uint8_t, uint8_t, unsigned char*))
 {
 	tsl_callback = cb_ptr;
 }
+
+void tsl_reset()
+{
+	_tslParserState = tslInit;
+}
+
 void tsl_onChar(unsigned char chr)
 {
 	if (chr & 0x80)
@@ -42,6 +55,10 @@ void tsl_onChar(unsigned char chr)
 			case tslControl:
 				tsl_tally  = (chr & 0x0f);
 				tsl_bright = (chr & 0x30) >> 4;
+				if (chr&0x40) //reserved (V3.x) /control (V4.x) bit set
+				{ // ignore the packet
+					_tslParserState = tslInit;
+				}
 				_tslParserState = tslData;
 				break;
 			case tslData:

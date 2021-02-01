@@ -24,7 +24,7 @@ void timer_init() {
 
 void timer_tick(void)
 {
-//	++systick;
+	++systick;
 	for(uint8_t i=0;i<NTMR;++i)
 		if (gptimer[i])
 			--gptimer[i];
@@ -53,7 +53,10 @@ uint16_t timer_get(uint8_t id) {
 
 uint8_t timer_expired(uint8_t id) {
 	id&=7;
-	return (gptimer[id]==0)?1:0;
+	cli();
+	uint16_t timer = gptimer[id];
+	sei();
+	return (timer == 0)?1:0;
 }
 
 void timer_set(uint8_t id, uint16_t val) {
