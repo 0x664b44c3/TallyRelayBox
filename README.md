@@ -1,6 +1,10 @@
 # TallyRelayBox
 RS-422 Tally relay box using the TSL protocol
 
+![assembled board](images/tallybox.jpg)
+
+
+
 ## Hardware
 
 This design is based on a ATMega324PB.
